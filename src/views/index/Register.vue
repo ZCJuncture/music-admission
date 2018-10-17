@@ -1,0 +1,158 @@
+<template lang="pug">
+  .root-register
+    .wp-register
+      .wp-logo
+        img(src="@/assets/logo-register.png")
+
+      el-form(ref="form" :model="model" :rules="rules")
+        .input-title
+          h2 考生报名
+          .wp-btn-back
+            el-button.btn-back(type="text" icon="el-icon-back" @click="back()") 返回
+
+        el-form-item(prop="phoneNumber")
+          el-input(v-model="model.phoneNumber" placeholder="手机号码")
+        el-form-item(prop="password")
+          el-input(v-model="model.password" placeholder="密码" type="password")
+        el-form-item(prop="password2")
+          el-input(v-model="model.password2" placeholder="确认密码" type="password")
+        el-form-item
+          el-button.btn-register(type="primary" @click="register()" :loading="registering") 注&nbsp;&nbsp;&nbsp;册
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import { Form } from 'element-ui';
+import * as crypto from 'crypto-browserify';
+import api from '@/api';
+
+@Component({})
+export default class Register extends Vue {
+  private model = {
+    phoneNumber: '',
+    password: '',
+    password2: '',
+  };
+
+  private registering: boolean = false;
+
+  private rules = {
+    phoneNumber: [
+      {
+        required: true,
+        pattern: /^1[345789]\d{9}$/,
+        message: '手机号码格式不正确',
+        trigger: 'blur',
+      },
+    ],
+    password: [
+      {
+        required: true,
+        min: 8,
+        max: 20,
+        message: '密码长度应在8到20个字符',
+        trigger: 'blur',
+      },
+    ],
+    password2: [
+      {
+        validator: (rule: any, value: string, callback) => {
+          if (value !== this.model.password) {
+            callback(new Error('两次密码不一致'));
+          } else {
+            callback();
+          }
+        },
+        trigger: 'blur',
+      },
+    ],
+  };
+
+  public register(): void {
+    (this.$refs.form as Form).validate(async (valid: boolean) => {
+      if (valid) {
+        this.registering = true;
+
+        try {
+          const md5 = crypto.createHash('md5');
+          md5.update(this.model.password);
+          const cryptoString: string = md5.digest('hex');
+
+          const msg: string = await api.register({
+            phoneNumber: this.model.phoneNumber,
+            password: cryptoString,
+          });
+
+          this.$message.success(msg);
+          this.$router.replace('login');
+        } catch (e) {
+          this.$message.error(e.data);
+        } finally {
+          this.registering = false;
+        }
+      }
+    });
+  }
+
+  public back(): void {
+    this.$router.replace('login');
+  }
+}
+</script>
+
+<style lang="scss">
+@import '../../styles';
+
+.root-register {
+  @extend .center-hv;
+  height: 100%;
+
+  .wp-register {
+    @extend .center-v;
+    box-sizing: border-box;
+    width: 850px;
+    height: 450px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+
+    .wp-logo {
+      @extend .center-hv;
+      width: 350px;
+      height: 100%;
+
+      img {
+        width: 280px;
+      }
+    }
+
+    .el-form {
+      flex-grow: 1;
+      padding: 60px;
+
+      .input-title {
+        @extend .center-v;
+        color: $color-primary;
+
+        .wp-btn-back {
+          flex-grow: 1;
+          text-align: right;
+
+          .btn-back {
+            font-size: 18px;
+          }
+        }
+      }
+
+      .el-input {
+        font-size: 18px;
+      }
+
+      .btn-register {
+        width: 100%;
+        font-size: 18px;
+      }
+    }
+  }
+}
+</style>

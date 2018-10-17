@@ -1,0 +1,17 @@
+$color-primary: #409eff;
+
+.center-h {
+  display: flex;
+  justify-content: center;
+}
+
+.center-v {
+  display: flex;
+  align-items: center;
+}
+
+.center-hv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
