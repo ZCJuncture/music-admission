@@ -11,7 +11,7 @@ export default new Router({
       path: '/index',
       component: () => import(/* webpackChunkName: "index" */ './views/index/Index.vue'),
       beforeEnter: async (to, from, next) => {
-        if (!await isLogin()) { next(); } else { next({ path: '/home', replace: true }); }
+        if (!await isLogin()) { next(); } else { next({ path: '/home/brief', replace: true }); }
       },
       children: [
         {
@@ -30,10 +30,24 @@ export default new Router({
       beforeEnter: async (to, from, next) => {
         if (await isLogin()) { next(); } else { next({ path: '/index/login', replace: true }); }
       },
+      children: [
+        {
+          path: 'brief',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/info/Brief.vue'),
+        },
+        {
+          path: 'newsList',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/info/NewsList.vue'),
+        },
+        {
+          path: 'noticeList',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/info/NoticeList.vue'),
+        },
+      ],
     },
     {
       path: '/',
-      redirect: '/home',
+      redirect: '/home/brief',
     },
   ],
 });
@@ -44,7 +58,8 @@ async function isLogin() {
   if (!token) { return false; } else { store.state.token = token; }
 
   try {
-    await api.checkStatus();
+    const user = await api.checkStatus();
+    store.commit('setUser', user);
     return true;
   } catch (e) {
     return false;

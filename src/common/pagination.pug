@@ -1,0 +1,9 @@
+el-pagination(
+  background
+  :current-page="pageNo"
+  :page-size="pageSize"
+  :total="total"
+  layout="total, sizes, prev, pager, next, jumper"
+  @current-change="changePageNo($event)"
+  @size-change="changePageSize($event)"
+)

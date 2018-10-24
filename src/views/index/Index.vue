@@ -32,7 +32,7 @@ export default class Index extends Vue {
   background-size: cover;
 
   .el-header {
-    @extend .center-v;
+    @include center-v;
     background-color: rgba(255, 255, 255, 0.7);
 
     img {

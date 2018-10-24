@@ -1,32 +1,43 @@
 <template lang="pug">
   .root-login
-    .wp-news
+    .wp-news(v-loading="loadingNews")
       h2 最新公告
-      h3 111
-      h3 222
+      li(v-for="item in newsList")
+        i.el-icon-document
+        span.text-title(@click="showNews(item)") {{item.title}}
+        .wp-date
+          span {{item.createDate | date}}
 
     .wp-login
       el-form(ref="form" :model="model" :rules="rules")
         el-form-item(prop="phoneNumber")
           el-input(v-model="model.phoneNumber" placeholder="手机号码")
         el-form-item(prop="password")
-          el-input(v-model="model.password" placeholder="密码" type="password")
+          el-input(v-model="model.password" placeholder="密码" type="password" @keyup.enter.native="login()")
         el-form-item
           el-button(type="primary" @click="login()" :loading="logining") 登&nbsp;&nbsp;&nbsp;录
 
       .login-footer
-        el-button(type="text" @click="register()") 忘记密码
+        el-button(type="text") 忘记密码
         el-button.btn-register(type="text" @click="register()") 报名注册
+
+    news-dialog(ref="dialog")
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Form } from 'element-ui';
 import * as crypto from 'crypto-browserify';
+import NewsDialog from '@/components/NewsDialog.vue';
 import api from '@/api';
 
-@Component({})
+@Component({
+  components: { NewsDialog },
+})
 export default class Login extends Vue {
+  private loadingNews: boolean = false;
+  private newsList: any[] = [];
+
   private model = {
     phoneNumber: '',
     password: '',
@@ -54,7 +65,21 @@ export default class Login extends Vue {
     ],
   };
 
-  public login(): void {
+  public async created() {
+    try {
+      this.loadingNews = true;
+      const { list } = await api.getNewsList();
+      this.newsList = list;
+    } finally {
+      this.loadingNews = false;
+    }
+  }
+
+  public showNews(item: any) {
+    (this.$refs.dialog as NewsDialog).showNews(item);
+  }
+
+  public login() {
     (this.$refs.form as Form).validate(async (valid: boolean) => {
       if (valid) {
         this.logining = true;
@@ -62,16 +87,16 @@ export default class Login extends Vue {
         try {
           const md5 = crypto.createHash('md5');
           md5.update(this.model.password);
-          const cryptoString: string = md5.digest('hex');
+          const cryptoStr = md5.digest('hex');
 
           const { token } = await api.login({
             phoneNumber: this.model.phoneNumber,
-            password: cryptoString,
+            password: cryptoStr,
           });
 
           this.$cookies.set('token', token);
           this.$store.commit('setToken', token);
-          this.$router.replace('/home');
+          this.$router.replace('/home/brief');
         } catch (e) {
           this.$message.error(e.data);
         } finally {
@@ -81,7 +106,7 @@ export default class Login extends Vue {
     });
   }
 
-  public register(): void {
+  public register() {
     this.$router.replace('register');
   }
 }
@@ -91,7 +116,7 @@ export default class Login extends Vue {
 @import '../../styles';
 
 .root-login {
-  @extend .center-hv;
+  @include center-hv;
   height: 100%;
 
   .wp-common {
@@ -104,7 +129,32 @@ export default class Login extends Vue {
   .wp-news {
     @extend .wp-common;
     width: 540px;
-    padding: 20px;
+    padding: 25px;
+    overflow: hidden;
+
+    h2 {
+      margin: 0 0 15px 0;
+    }
+
+    li {
+      @include center-v;
+      margin-top: 10px;
+
+      .text-title {
+        margin-left: 5px;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .wp-date {
+        flex-grow: 1;
+        text-align: right;
+        font-size: 14px;
+      }
+    }
   }
 
   .wp-login {
@@ -127,7 +177,7 @@ export default class Login extends Vue {
     }
 
     .login-footer {
-      @extend .center-hv;
+      @include center-hv;
       width: 100%;
       height: 80px;
       position: absolute;

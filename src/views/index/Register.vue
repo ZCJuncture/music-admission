@@ -15,7 +15,7 @@
         el-form-item(prop="password")
           el-input(v-model="model.password" placeholder="密码" type="password")
         el-form-item(prop="password2")
-          el-input(v-model="model.password2" placeholder="确认密码" type="password")
+          el-input(v-model="model.password2" placeholder="确认密码" type="password" @keyup.enter.native="register()")
         el-form-item
           el-button.btn-register(type="primary" @click="register()" :loading="registering") 注&nbsp;&nbsp;&nbsp;册
 </template>
@@ -68,7 +68,7 @@ export default class Register extends Vue {
     ],
   };
 
-  public register(): void {
+  public register() {
     (this.$refs.form as Form).validate(async (valid: boolean) => {
       if (valid) {
         this.registering = true;
@@ -76,14 +76,14 @@ export default class Register extends Vue {
         try {
           const md5 = crypto.createHash('md5');
           md5.update(this.model.password);
-          const cryptoString: string = md5.digest('hex');
+          const cryptoStr = md5.digest('hex');
 
-          const msg: string = await api.register({
+          await api.register({
             phoneNumber: this.model.phoneNumber,
-            password: cryptoString,
+            password: cryptoStr,
           });
 
-          this.$message.success(msg);
+          this.$message.success('注册成功');
           this.$router.replace('login');
         } catch (e) {
           this.$message.error(e.data);
@@ -94,7 +94,7 @@ export default class Register extends Vue {
     });
   }
 
-  public back(): void {
+  public back() {
     this.$router.replace('login');
   }
 }
@@ -104,11 +104,11 @@ export default class Register extends Vue {
 @import '../../styles';
 
 .root-register {
-  @extend .center-hv;
+  @include center-hv;
   height: 100%;
 
   .wp-register {
-    @extend .center-v;
+    @include center-v;
     box-sizing: border-box;
     width: 850px;
     height: 450px;
@@ -117,7 +117,7 @@ export default class Register extends Vue {
     border-radius: 5px;
 
     .wp-logo {
-      @extend .center-hv;
+      @include center-hv;
       width: 350px;
       height: 100%;
 
@@ -131,7 +131,7 @@ export default class Register extends Vue {
       padding: 60px;
 
       .input-title {
-        @extend .center-v;
+        @include center-v;
         color: $color-primary;
 
         .wp-btn-back {

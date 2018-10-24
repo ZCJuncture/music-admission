@@ -1,9 +1,11 @@
+import Vue from 'vue';
 import axios, { AxiosPromise } from 'axios';
 import store from '@/store';
 
 class Api {
   // private HOST: string = 'http://localhost:7001/';
   private HOST: string = 'http://123.206.27.201:7001/';
+  private pageSize: number = 10;
 
   public checkStatus() {
     return this.get('user/checkStatus');
@@ -19,6 +21,10 @@ class Api {
 
   public logout() {
     return this.get('user/logout');
+  }
+
+  public getNewsList(keyword: string = '', pageNo: number = 1, pageSize: number = this.pageSize) {
+    return this.get(`news/getList?keyword=${keyword}&pageNo=${pageNo}&pageSize=${pageSize}`);
   }
 
   private get(url: string) {
@@ -51,11 +57,9 @@ class Api {
       const resp: any = await promise;
       return resp.data;
     } catch (e) {
-      // if (e.response.status === 403) {
-
-      // } else {
-      //   throw e.response;
-      // }
+      if (e.response.status === 403) {
+        Vue.bus.emit('tokenExpired');
+      }
       throw e.response;
     }
   }

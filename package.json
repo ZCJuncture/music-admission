@@ -11,6 +11,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.4.8",
     "vue": "^2.5.17",
+    "vue-bus": "^1.1.0",
     "vue-class-component": "^6.0.0",
     "vue-cookies": "^1.5.7",
     "vue-property-decorator": "^7.0.0",
