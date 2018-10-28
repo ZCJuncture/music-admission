@@ -3,8 +3,8 @@ import axios, { AxiosPromise } from 'axios';
 import store from '@/store';
 
 class Api {
-  // private HOST: string = 'http://localhost:7001/';
-  private HOST: string = 'http://123.206.27.201:7001/';
+  private HOST: string = process.env.NODE_ENV === 'development' ?
+    'http://localhost:7001/' : '/api/';
   private pageSize: number = 10;
 
   public checkStatus() {

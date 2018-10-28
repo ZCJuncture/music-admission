@@ -23,7 +23,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Form } from 'element-ui';
-import * as crypto from 'crypto-browserify';
+import MD5 from 'md5.js';
 import api from '@/api';
 
 @Component({})
@@ -74,13 +74,9 @@ export default class Register extends Vue {
         this.registering = true;
 
         try {
-          const md5 = crypto.createHash('md5');
-          md5.update(this.model.password);
-          const cryptoStr = md5.digest('hex');
-
           await api.register({
             phoneNumber: this.model.phoneNumber,
-            password: cryptoStr,
+            password: new MD5().update(this.model.password).digest('hex'),
           });
 
           this.$message.success('注册成功');

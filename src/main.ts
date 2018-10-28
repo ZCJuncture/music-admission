@@ -1,3 +1,5 @@
+import 'core-js/fn/string/starts-with';
+
 import Vue from 'vue';
 import VueBus from 'vue-bus';
 import VueCookies from 'vue-cookies';

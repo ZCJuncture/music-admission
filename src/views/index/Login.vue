@@ -27,7 +27,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Form } from 'element-ui';
-import * as crypto from 'crypto-browserify';
+import MD5 from 'md5.js';
 import NewsDialog from '@/components/NewsDialog.vue';
 import api from '@/api';
 
@@ -85,13 +85,9 @@ export default class Login extends Vue {
         this.logining = true;
 
         try {
-          const md5 = crypto.createHash('md5');
-          md5.update(this.model.password);
-          const cryptoStr = md5.digest('hex');
-
           const { token } = await api.login({
             phoneNumber: this.model.phoneNumber,
-            password: cryptoStr,
+            password: new MD5().update(this.model.password).digest('hex'),
           });
 
           this.$cookies.set('token', token);
