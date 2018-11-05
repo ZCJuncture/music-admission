@@ -28,9 +28,8 @@
             template(slot="title")
               i.el-icon-edit
               span 报考流程
-            el-menu-item(index="2-1") 信息填报
+            el-menu-item(index="fillOut") 信息填报
             el-menu-item(index="2-2") 在线缴费
-            el-menu-item(index="2-3") 打印证件
 
           el-submenu(index="result")
             template(slot="title")

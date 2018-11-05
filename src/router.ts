@@ -43,6 +43,10 @@ export default new Router({
           path: 'noticeList',
           component: () => import(/* webpackChunkName: "home" */ './views/home/info/NoticeList.vue'),
         },
+        {
+          path: 'fillOut',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/FillOut.vue'),
+        },
       ],
     },
     {

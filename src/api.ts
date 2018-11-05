@@ -5,7 +5,6 @@ import store from '@/store';
 class Api {
   private HOST: string = process.env.NODE_ENV === 'development' ?
     'http://localhost:7001/' : '/api/';
-  private pageSize: number = 10;
 
   public checkStatus() {
     return this.get('user/checkStatus');
@@ -23,8 +22,24 @@ class Api {
     return this.get('user/logout');
   }
 
-  public getNewsList(keyword: string = '', pageNo: number = 1, pageSize: number = this.pageSize) {
+  public getNewsList(keyword?: string, pageNo?: number, pageSize?: number) {
     return this.get(`news/getList?keyword=${keyword}&pageNo=${pageNo}&pageSize=${pageSize}`);
+  }
+
+  public updateInfo(data: any) {
+    return this.post('enroll/updateInfo', data);
+  }
+
+  public uploadFileUrl() {
+    return this.HOST + 'enroll/uploadFile';
+  }
+
+  public downloadFileUrl(fileName: string) {
+    return this.HOST + `enroll/downloadFile?token=${store.state.token}&fileName=${fileName}`;
+  }
+
+  public deleteFile(fileName: string) {
+    return this.get(`enroll/deleteFile?fileName=${fileName}`);
   }
 
   private get(url: string) {
