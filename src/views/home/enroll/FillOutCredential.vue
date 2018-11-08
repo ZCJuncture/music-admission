@@ -18,7 +18,7 @@
             span(v-else) {{model.credentialNumber}}
 
           el-form-item(label="证件照" label-width="75px")
-            el-upload(v-if="editable && credentialUrl === ''" drag accept="image/*" :action="uploadUrl" :headers="{token}" :on-success="getCredential")
+            el-upload(v-if="editable && credentialUrl === ''" drag accept="image/*" :action="uploadCredentialUrl" :headers="{token}" :on-success="getCredential")
               i.el-icon-upload
               div 将文件拖到此处，或点击上传
             .wp-uploaded(v-else)
@@ -29,8 +29,8 @@
         span(slot="header") 免冠照片
 
         el-form(label-suffix=":" size="small")
-          el-form-item(label="近期照片" label-width="75px")
-            el-upload(v-if="editable && photoUrl === ''" drag accept="image/*" :action="uploadUrl" :headers="{token}" :on-success="getPhoto")
+          el-form-item(label="免冠照片" label-width="75px")
+            el-upload(v-if="editable && photoUrl === ''" drag accept="image/*" :action="uploadPhotoUrl" :headers="{token}" :on-success="getPhoto")
               i.el-icon-upload
               div 将文件拖到此处，或点击上传
             .wp-uploaded(v-else)
@@ -49,7 +49,8 @@ export default class FillOutCredential extends Vue {
   @Prop()
   private model;
 
-  private uploadUrl: string = api.uploadFileUrl();
+  private uploadCredentialUrl: string = api.uploadImageUrl('credential');
+  private uploadPhotoUrl: string = api.uploadImageUrl('photo');
   private token: string = this.$store.state.token;
 
   get credentialUrl() {
@@ -57,7 +58,7 @@ export default class FillOutCredential extends Vue {
     if (!fileName && fileName === '') {
       return '';
     } else {
-      return api.downloadFileUrl(this.model.credentialFile);
+      return api.downloadImageUrl(this.model.credentialFile);
     }
   }
 
@@ -66,12 +67,13 @@ export default class FillOutCredential extends Vue {
     if (!fileName && fileName === '') {
       return '';
     } else {
-      return api.downloadFileUrl(this.model.photoFile);
+      return api.downloadImageUrl(this.model.photoFile);
     }
   }
 
   public getCredential(fileName: string) {
     this.model.credentialFile = fileName;
+    this.$message.success('证件照已保存');
   }
 
   public async removeCredential() {
@@ -81,7 +83,7 @@ export default class FillOutCredential extends Vue {
         type: 'warning',
       });
 
-      await api.deleteFile(this.model.credentialFile);
+      await api.deleteImage('credential', this.model.credentialFile);
       this.model.credentialFile = '';
     } catch (e) {
       this.$message.error(e.data);
@@ -90,6 +92,7 @@ export default class FillOutCredential extends Vue {
 
   public getPhoto(fileName: string) {
     this.model.photoFile = fileName;
+    this.$message.success('照片已保存');
   }
 
   public async removePhoto() {
@@ -99,7 +102,7 @@ export default class FillOutCredential extends Vue {
         type: 'warning',
       });
 
-      await api.deleteFile(this.model.photoFile);
+      await api.deleteImage('photo', this.model.photoFile);
       this.model.photoFile = '';
     } catch (e) {
       this.$message.error(e.data);

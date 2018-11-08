@@ -6,6 +6,9 @@ class Api {
   private HOST: string = process.env.NODE_ENV === 'development' ?
     'http://localhost:7001/' : '/api/';
 
+  private FILE_HOST: string = process.env.NODE_ENV === 'development' ?
+    'http://localhost:7001/' : 'http://101.200.60.188:7001/';
+
   public checkStatus() {
     return this.get('user/checkStatus');
   }
@@ -30,21 +33,25 @@ class Api {
     return this.post('enroll/updateInfo', data);
   }
 
-  public uploadFileUrl() {
-    return this.HOST + 'enroll/uploadFile';
+  public uploadImageUrl(type: string) {
+    return this.FILE_HOST + `enroll/uploadImage?type=${type}`;
   }
 
-  public downloadFileUrl(fileName: string) {
-    return this.HOST + `enroll/downloadFile?token=${store.state.token}&fileName=${fileName}`;
+  public downloadImageUrl(fileName: string) {
+    return this.FILE_HOST + `enroll/downloadImage?token=${store.state.token}&fileName=${fileName}`;
   }
 
-  public deleteFile(fileName: string) {
-    return this.get(`enroll/deleteFile?fileName=${fileName}`);
+  public deleteImage(type: string, fileName: string) {
+    return this.get(`enroll/deleteImage?type=${type}&fileName=${fileName}`, this.FILE_HOST);
   }
 
-  private get(url: string) {
+  public getAlipayUrl() {
+    return this.get('enroll/getAlipayUrl');
+  }
+
+  private get(url: string, host = this.HOST) {
     const promise: AxiosPromise = axios.get(
-      this.HOST + url,
+      host + url,
       {
         headers: {
           token: store.state.token,
@@ -54,9 +61,9 @@ class Api {
     return this.handleResult(promise);
   }
 
-  private post(url: string, data: any) {
+  private post(url: string, data: any, host = this.HOST) {
     const promise: AxiosPromise = axios.post(
-      this.HOST + url,
+      host + url,
       data,
       {
         headers: {

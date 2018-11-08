@@ -1,7 +1,7 @@
 <template lang="pug">
   .root-brief
     .wp-shortcut
-      el-button.btn-enroll(icon="el-icon-edit") 考生报名
+      el-button.btn-enroll(icon="el-icon-edit" @click="test()") 考生报名
       el-button.btn-result(icon="el-icon-search") 查询成绩
 
     .wp-card
@@ -55,6 +55,12 @@ export default class Brief extends Vue {
 
   public routeTo(path: string) {
     this.$router.push(path);
+  }
+
+  public async test() {
+    const newWindow = window.open();
+    const url = await api.getAlipayUrl();
+    (newWindow as any).location = url;
   }
 }
 </script>
