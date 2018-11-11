@@ -33,6 +33,10 @@ class Api {
     return this.post('enroll/updateInfo', data);
   }
 
+  public modifyInfo(data: any) {
+    return this.post('enroll/modifyInfo', data);
+  }
+
   public uploadImageUrl(type: string) {
     return this.FILE_HOST + `enroll/uploadImage?type=${type}`;
   }

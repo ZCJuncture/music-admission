@@ -4,8 +4,8 @@
       el-card.card-credential
         span(slot="header") 证件信息
 
-        el-form(label-suffix=":" size="small")
-          el-form-item(label="证件类型" label-width="75px" style="width: 35%")
+        el-form(ref="credentialForm" :model="model" label-suffix=":" size="small" :show-message="false" hide-required-asterisk)
+          el-form-item(required prop="credentialType" label="证件类型" label-width="75px" style="width: 35%")
             el-select(v-if="editable" v-model="model.credentialType")
               el-option(value="身份证")
               el-option(value="军人证")
@@ -13,12 +13,12 @@
               el-option(value="护照")
             span(v-else) {{model.credentialType}}
 
-          el-form-item(label="证件号" label-width="75px" style="width: 65%")
+          el-form-item(required prop="credentialNumber" label="证件号" label-width="75px" style="width: 65%")
             el-input(v-if="editable" v-model="model.credentialNumber")
             span(v-else) {{model.credentialNumber}}
 
-          el-form-item(label="证件照" label-width="75px")
-            el-upload(v-if="editable && credentialUrl === ''" drag accept="image/*" :action="uploadCredentialUrl" :headers="{token}" :on-success="getCredential")
+          el-form-item(required prop="credentialFile" label="证件照" label-width="75px")
+            el-upload(v-if="editable && credentialUrl === ''" drag accept="image/*" :action="uploadCredentialUrl" :headers="{token}" :on-success="onCredentialSuccess")
               i.el-icon-upload
               div 将文件拖到此处，或点击上传
             .wp-uploaded(v-else)
@@ -28,9 +28,9 @@
       el-card.card-photo
         span(slot="header") 免冠照片
 
-        el-form(label-suffix=":" size="small")
-          el-form-item(label="免冠照片" label-width="75px")
-            el-upload(v-if="editable && photoUrl === ''" drag accept="image/*" :action="uploadPhotoUrl" :headers="{token}" :on-success="getPhoto")
+        el-form(ref="photoForm" :model="model" label-suffix=":" size="small" :show-message="false" hide-required-asterisk)
+          el-form-item(required prop="photoFile" label="免冠照片" label-width="75px")
+            el-upload(v-if="editable && photoUrl === ''" drag accept="image/*" :action="uploadPhotoUrl" :headers="{token}" :on-success="onPhotoSuccess")
               i.el-icon-upload
               div 将文件拖到此处，或点击上传
             .wp-uploaded(v-else)
@@ -40,6 +40,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Form } from 'element-ui';
 import api from '@/api';
 
 @Component({})
@@ -53,36 +54,36 @@ export default class FillOutCredential extends Vue {
   private uploadPhotoUrl: string = api.uploadImageUrl('photo');
   private token: string = this.$store.state.token;
 
-  get credentialUrl() {
+  private get credentialUrl() {
     const fileName = this.model.credentialFile;
-    if (!fileName && fileName === '') {
+    if (!fileName || fileName === '') {
       return '';
     } else {
       return api.downloadImageUrl(this.model.credentialFile);
     }
   }
 
-  get photoUrl() {
+  private get photoUrl() {
     const fileName = this.model.photoFile;
-    if (!fileName && fileName === '') {
+    if (!fileName || fileName === '') {
       return '';
     } else {
       return api.downloadImageUrl(this.model.photoFile);
     }
   }
 
-  public getCredential(fileName: string) {
+  public onCredentialSuccess(fileName: string) {
     this.model.credentialFile = fileName;
     this.$message.success('证件照已保存');
   }
 
   public async removeCredential() {
-    try {
-      const a = await this.$confirm('确定要删除证件照吗？', {
-        title: '提示',
-        type: 'warning',
-      });
+    await this.$confirm('确定要删除证件照吗？', {
+      title: '提示',
+      type: 'warning',
+    });
 
+    try {
       await api.deleteImage('credential', this.model.credentialFile);
       this.model.credentialFile = '';
     } catch (e) {
@@ -90,23 +91,39 @@ export default class FillOutCredential extends Vue {
     }
   }
 
-  public getPhoto(fileName: string) {
+  public onPhotoSuccess(fileName: string) {
     this.model.photoFile = fileName;
     this.$message.success('照片已保存');
   }
 
   public async removePhoto() {
-    try {
-      const a = await this.$confirm('确定要删除照片吗？', {
-        title: '提示',
-        type: 'warning',
-      });
+    await this.$confirm('确定要删除照片吗？', {
+      title: '提示',
+      type: 'warning',
+    });
 
+    try {
       await api.deleteImage('photo', this.model.photoFile);
       this.model.photoFile = '';
     } catch (e) {
       this.$message.error(e.data);
     }
+  }
+
+  public async validate() {
+    const credentialValid = await new Promise((resolve, reject) => {
+      (this.$refs.credentialForm as Form).validate((valid: boolean) => {
+        resolve(valid);
+      });
+    });
+
+    const photoValid = await new Promise((resolve, reject) => {
+      (this.$refs.photoForm as Form).validate((valid: boolean) => {
+        resolve(valid);
+      });
+    });
+
+    return (credentialValid && photoValid) as boolean;
   }
 }
 </script>

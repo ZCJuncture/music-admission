@@ -7,7 +7,7 @@
 
       .wp-dropdown
         el-dropdown(@command="handleCommand($event)")
-          el-button.btn-dropdown(type="text") {{phoneNumber}}
+          el-button.btn-dropdown(type="text") {{user}}
             i.el-icon-arrow-down.el-icon--right
           el-dropdown-menu(slot="dropdown")
             el-dropdown-item(command="password") 修改密码
@@ -15,7 +15,7 @@
 
     el-container
       el-aside(width="auto")
-        el-menu(router background-color="#545c64" text-color="white" :collapse="isCollapse" default-active="brief")
+        el-menu(router background-color="#545c64" text-color="white" :collapse="isCollapse" :default-active="path")
           el-submenu(index="info")
             template(slot="title")
               i.el-icon-document
@@ -29,7 +29,7 @@
               i.el-icon-edit
               span 报考流程
             el-menu-item(index="fillOut") 信息填报
-            el-menu-item(index="2-2") 在线缴费
+            el-menu-item(index="onlinePay") 在线缴费
 
           el-submenu(index="result")
             template(slot="title")
@@ -49,13 +49,26 @@ import api from '@/api';
 @Component({})
 export default class Home extends Vue {
   private isCollapse: boolean = false;
-  private phoneNumber: string = this.$store.state.user.phoneNumber;
+  private path: string = 'brief';
+
+  private get user() {
+    return this.$store.state.user.name || this.$store.state.user.phoneNumber;
+  }
 
   public created() {
-    this.$bus.once('tokenExpired', () => {
+    this.$bus.on('routeTo', (path: string) => {
+      this.path = path;
+    });
+
+    this.$bus.on('tokenExpired', () => {
       this.$message.error('登录状态过期');
       this.logout();
     });
+  }
+
+  public destroyed() {
+    this.$bus.off('routeTo');
+    this.$bus.off('tokenExpired');
   }
 
   public async handleCommand(command: string) {
@@ -72,10 +85,10 @@ export default class Home extends Vue {
     }
   }
 
-  private logout() {
+  public logout() {
     this.$cookies.remove('token');
     this.$store.commit('setToken', '');
-    this.$store.commit('setUser', null);
+    this.$store.commit('setUser', {});
     this.$router.replace('/index/login');
   }
 }

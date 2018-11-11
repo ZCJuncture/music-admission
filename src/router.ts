@@ -5,7 +5,7 @@ import api from '@/api';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/index',
@@ -47,13 +47,23 @@ export default new Router({
           path: 'fillOut',
           component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/FillOut.vue'),
         },
+        {
+          path: 'onlinePay',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/OnlinePay.vue'),
+        },
       ],
     },
-    {
-      path: '/',
-      redirect: '/home/brief',
-    },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.length === 0) { next('/home/brief'); } else { next(); }
+});
+
+router.afterEach((to, from) => {
+  const array = to.path.split('/');
+  const path = array[array.length - 1];
+  Vue.bus.emit('routeTo', path);
 });
 
 async function isLogin() {
@@ -69,3 +79,5 @@ async function isLogin() {
     return false;
   }
 }
+
+export default router;

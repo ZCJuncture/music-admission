@@ -34,11 +34,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({})
 export default class ExamBlock extends Vue {
   private static instrumentList = require('@/assets/major.json').slice(4, 7);
+  private instrumentList: any[] = ExamBlock.instrumentList;
+
   @Prop()
   private editable;
   @Prop()
   private data: any;
-  private instrumentList: any[] = ExamBlock.instrumentList;
 
   public changeInstrument(item: any) {
     const isPiano = item.value[1] === '钢琴';
@@ -74,6 +75,30 @@ export default class ExamBlock extends Vue {
         return;
       }
     }
+  }
+
+  public validate() {
+    for (const item of this.data) {
+      if (!item.hide) {
+        continue;
+      }
+
+      switch (item.type) {
+        case 'cascader':
+          if (item.value.length === 0) {
+            return false;
+          }
+          break;
+        case 'select':
+        case 'input':
+          if (item.value === '') {
+            return false;
+          }
+          break;
+      }
+    }
+
+    return true;
   }
 }
 </script>
