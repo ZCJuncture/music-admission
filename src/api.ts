@@ -49,8 +49,16 @@ class Api {
     return this.get(`enroll/deleteImage?type=${type}&fileName=${fileName}`, this.FILE_HOST);
   }
 
-  public getAlipayUrl() {
-    return this.get('enroll/getAlipayUrl');
+  public getPayList() {
+    return this.get('pay/getList');
+  }
+
+  public getPayInfo(payType: string, itemId: string, orderId?: string) {
+    return this.get(`pay/getPayInfo?payType=${payType}&itemId=${itemId}` + (orderId ? `&orderId=${orderId}` : ''));
+  }
+
+  public getPayResult(payType: string, itemId: string, orderId: string) {
+    return this.get(`pay/getPayResult?payType=${payType}&itemId=${itemId}&orderId=${orderId}`);
   }
 
   private get(url: string, host = this.HOST) {

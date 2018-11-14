@@ -48,9 +48,9 @@
         span(slot="header") 联系方式
 
         el-form(ref="contactForm" :model="model" label-suffix=":" size="small" :show-message="false" hide-required-asterisk)
-          el-form-item(required prop="phoneNumber" label="手机号" label-width="60px")
-            el-input(v-if="editable" v-model="model.phoneNumber" disabled)
-            span(v-else) {{model.phoneNumber}}
+          el-form-item(required prop="phoneNumber2" label="手机号" label-width="60px")
+            el-input(v-if="editable" v-model="model.phoneNumber2")
+            span(v-else) {{model.phoneNumber2}}
 
           el-form-item(required prop="postcode" label="邮政编码" label-width="90px")
             el-input(v-if="editable" v-model="model.postcode")

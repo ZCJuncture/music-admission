@@ -1,5 +1,9 @@
 import Vue from 'vue';
 
+Vue.filter('currency', (price: number) => {
+  return '￥' + price.toFixed(2);
+});
+
 Vue.filter('date', (dateStr: string) => {
   const dateObj = new Date(dateStr);
 
