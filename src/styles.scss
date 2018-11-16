@@ -17,6 +17,12 @@ $color-secondary: #F56C6C;
   align-items: center;
 }
 
+@mixin one-line() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @mixin button-color($color) {
   background-color: $color;
   border-color: $color;

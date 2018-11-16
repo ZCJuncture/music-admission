@@ -1,6 +1,6 @@
 <template lang="pug">
   el-container.root-home
-    el-header
+    el-header(:style="{ backgroundImage: background }")
       el-button.btn-menu(type="primary" icon="el-icon-more" @click="isCollapse = !isCollapse")
       img(src="@/assets/logo-header.png")
       h1 中央音乐学院招生系统
@@ -13,9 +13,9 @@
             el-dropdown-item(command="password") 修改密码
             el-dropdown-item(command="logout") 退出登录
 
-    el-container
+    el-container.wp-container
       el-aside(width="auto")
-        el-menu(router background-color="#545c64" text-color="white" :collapse="isCollapse" :default-active="path")
+        el-menu(router :default-active="routePath" background-color="#545c64" text-color="white" :collapse="isCollapse" :collapse-transition="false")
           el-submenu(index="info")
             template(slot="title")
               i.el-icon-document
@@ -38,7 +38,7 @@
             el-menu-item(index="3-1") 复试查询
             el-menu-item(index="3-2") 快递单号
 
-      el-main
+      el-main(:style="{ marginLeft: isCollapse ? '65px' : '200px' }")
         router-view
 </template>
 
@@ -48,8 +48,9 @@ import api from '@/api';
 
 @Component({})
 export default class Home extends Vue {
+  private background: string = 'url(' + require('@/assets/bg-header.jpg') + ')';
+  private routePath: string = 'brief';
   private isCollapse: boolean = false;
-  private path: string = 'brief';
 
   private get user() {
     return this.$store.state.user.name || this.$store.state.user.phoneNumber;
@@ -57,7 +58,7 @@ export default class Home extends Vue {
 
   public created() {
     this.$bus.on('routeTo', (path: string) => {
-      this.path = path;
+      this.routePath = path;
     });
 
     this.$bus.on('tokenExpired', () => {
@@ -102,14 +103,21 @@ export default class Home extends Vue {
 
   .el-header {
     @include center-v;
+    position: fixed;
+    width: 100%;
+    height: 60px;
     padding: 0;
-    background-color: $color-primary;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0 1px 10px grey;
 
     .btn-menu {
       width: 65px;
       height: 100%;
-      background-color: darken($color-primary, 5%);
-      border-color: darken($color-primary, 5%);
+      background-color: transparent;
+      border: 0;
+      border-radius: 0;
+      border-right: 1px solid white;
     }
 
     img {
@@ -143,11 +151,22 @@ export default class Home extends Vue {
     }
   }
 
-  .el-aside {
-    background-color: #545c64;
+  .wp-container {
+    height: calc(100% - 60px);
+    margin-top: 60px;
 
-    .el-menu:not(.el-menu--collapse) {
-      width: 200px;
+    .el-aside {
+      position: fixed;
+      height: 100%;
+      background-color: #545c64;
+
+      .el-menu {
+        border: 0;
+
+        &:not(.el-menu--collapse) {
+          width: 200px;
+        }
+      }
     }
   }
 }

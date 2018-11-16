@@ -12,10 +12,19 @@
 
         el-form-item(prop="phoneNumber")
           el-input(v-model="model.phoneNumber" placeholder="手机号码")
+
+        el-form-item(prop="smsCode")
+          el-input(v-model="model.smsCode" placeholder="验证码")
+            el-button.btn-code(slot="append" size="small" @click="getSmsCode()" :disabled="countdown > 0")
+              span(v-if="countdown === 0") 获取
+              span(v-else) {{countdown}}
+
         el-form-item(prop="password")
           el-input(v-model="model.password" placeholder="密码" type="password")
+
         el-form-item(prop="password2")
           el-input(v-model="model.password2" placeholder="确认密码" type="password" @keyup.enter.native="register()")
+
         el-form-item
           el-button.btn-register(type="primary" @click="register()" :loading="registering") 注&nbsp;&nbsp;&nbsp;册
 </template>
@@ -30,10 +39,12 @@ import api from '@/api';
 export default class Register extends Vue {
   private model = {
     phoneNumber: '',
+    smsCode: '',
     password: '',
     password2: '',
   };
 
+  private countdown: number = 0;
   private registering: boolean = false;
 
   private rules = {
@@ -42,6 +53,14 @@ export default class Register extends Vue {
         required: true,
         pattern: /^1[345789]\d{9}$/,
         message: '手机号码格式不正确',
+        trigger: 'blur',
+      },
+    ],
+    smsCode: [
+      {
+        required: true,
+        pattern: /^\d{6}$/,
+        message: '验证码应为6位数字',
         trigger: 'blur',
       },
     ],
@@ -67,6 +86,20 @@ export default class Register extends Vue {
       },
     ],
   };
+
+  public getSmsCode() {
+    if (!/^1[345789]\d{9}$/.test(this.model.phoneNumber)) {
+      this.$message.warning('手机号码格式不正确');
+      return;
+    }
+
+    this.countdown = 60;
+    const interval = setInterval(() => {
+      if (--this.countdown === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  }
 
   public register() {
     (this.$refs.form as Form).validate(async (valid: boolean) => {
@@ -140,13 +173,23 @@ export default class Register extends Vue {
         }
       }
 
-      .el-input {
-        font-size: 18px;
-      }
+      .el-form-item {
+        margin-bottom: 18px;
 
-      .btn-register {
-        width: 100%;
-        font-size: 18px;
+        .el-input {
+          font-size: 18px;
+        }
+
+        .btn-code {
+          width: 80px;
+          height: 100%;
+          font-size: 16px;
+        }
+
+        .btn-register {
+          width: 100%;
+          font-size: 18px;
+        }
       }
     }
   }

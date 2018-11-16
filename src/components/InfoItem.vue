@@ -4,7 +4,7 @@
       slot(name="icon")
 
     .wp-text
-      .text-title {{item.title}}
+      .text-title {{item.title || item.content}}
       .text-date {{item.createDate | datetime}}
 </template>
 
@@ -35,6 +35,7 @@ export default class InfoItem extends Vue {
 
   .wp-icon {
     @include center-hv;
+    flex-shrink: 0;
     width: 50px;
     height: 100%;
     border-radius: 5px 0 0 5px;
@@ -44,9 +45,11 @@ export default class InfoItem extends Vue {
   }
 
   .wp-text {
+    width: calc(100% - 60px);
     margin-left: 10px;
 
     .text-title {
+      @include one-line;
       color: $color-primary;
     }
 

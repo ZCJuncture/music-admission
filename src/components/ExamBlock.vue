@@ -10,12 +10,12 @@
       .exam-text(v-if="item.type === 'text' && !item.hide") {{item.text}}
 
       el-form-item(v-if="item.type === 'cascader'" label="主试乐器" label-width="75px" style="width: 100%")
-        el-cascader(v-if="editable" v-model="item.value" :options="instrumentList" :props="{value: 'label'}" @change="changeInstrument(item)")
+        el-cascader(v-if="editable" v-model="item.value" :options="instrumentList" :props="{value: 'name', label: 'name'}" @change="changeInstrument(item)")
         span(v-else) {{item.value[1]}}
 
       el-form-item(v-if="item.type === 'select' && !item.hide" :label="item.label" :label-width="item.labelWidth" style="width: 100%")
         el-select(v-if="editable" v-model="item.value" @change="changeSelection(item)")
-          el-option(v-for="option in item.options" :value="option.value")
+          el-option(v-for="option in item.options" :key="option.value" :value="option.value")
         span(v-else) {{item.value}}
 
       template(v-if="item.type === 'input' && !item.hide")
@@ -33,13 +33,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({})
 export default class ExamBlock extends Vue {
-  private static instrumentList = require('@/assets/major.json').slice(4, 7);
-  private instrumentList: any[] = ExamBlock.instrumentList;
-
   @Prop()
   private editable;
   @Prop()
   private data: any;
+  @Prop()
+  private instrumentList;
 
   public changeInstrument(item: any) {
     const isPiano = item.value[1] === '钢琴';
@@ -79,7 +78,7 @@ export default class ExamBlock extends Vue {
 
   public validate() {
     for (const item of this.data) {
-      if (!item.hide) {
+      if (item.hide) {
         continue;
       }
 
@@ -90,8 +89,12 @@ export default class ExamBlock extends Vue {
           }
           break;
         case 'select':
-        case 'input':
           if (item.value === '') {
+            return false;
+          }
+          break;
+        case 'input':
+          if (item.value === '' || item.author === '') {
             return false;
           }
           break;

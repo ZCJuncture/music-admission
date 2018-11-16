@@ -21,7 +21,9 @@
           span 通知
           .wp-button
             el-button(type="text" @click="routeTo('noticeList')") 更多
-        h1 test
+
+        info-item(v-for="item in noticeList" :key="item._id" :item="item" @click.native="showNews(item)")
+          i.el-icon-bell(slot="icon")
 
     news-dialog(ref="dialog")
 </template>
@@ -37,15 +39,36 @@ import api from '@/api';
 })
 export default class Brief extends Vue {
   private loadingNews: boolean = false;
+  private loadingNotice: boolean = false;
   private newsList: any[] = [];
+  private noticeList: any[] = [];
 
   public async created() {
+    this.getNewsList();
+    this.getNoticeList();
+  }
+
+  public async getNewsList() {
     try {
       this.loadingNews = true;
       const { list } = await api.getNewsList();
       this.newsList = list;
+    } catch (e) {
+      this.$message.error(e.data);
     } finally {
       this.loadingNews = false;
+    }
+  }
+
+  public async getNoticeList() {
+    try {
+      this.loadingNotice = true;
+      const { list } = await api.getNoticeList();
+      this.noticeList = list;
+    } catch (e) {
+      this.$message.error(e.data);
+    } finally {
+      this.loadingNotice = false;
     }
   }
 

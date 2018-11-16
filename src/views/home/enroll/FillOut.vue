@@ -128,9 +128,9 @@ export default class FillOut extends Vue {
     this.model.submitted = true;
 
     try {
-      await api.updateInfo(this.model);
+      const message = await api.updateInfo(this.model);
       this.$store.commit('setUser', this.model);
-      this.$message.success('提交成功，请在线缴费');
+      this.$notify.info({ title: '通知', message });
       this.$router.replace('onlinePay');
       this.editable = false;
     } catch (e) {

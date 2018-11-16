@@ -25,8 +25,20 @@ class Api {
     return this.get('user/logout');
   }
 
-  public getNewsList(keyword?: string, pageNo?: number, pageSize?: number) {
-    return this.get(`news/getList?keyword=${keyword}&pageNo=${pageNo}&pageSize=${pageSize}`);
+  public getNewsList(keyword?: string | null, pageNo?: number, pageSize?: number) {
+    return this.get('news/getNewsList', { keyword, pageNo, pageSize });
+  }
+
+  public getNoticeList(keyword?: string | null, pageNo?: number, pageSize?: number) {
+    return this.get('notice/getNoticeList', { keyword, pageNo, pageSize });
+  }
+
+  public getMajorList() {
+    return this.get('enroll/getMajorList');
+  }
+
+  public getExamInfo(major: string) {
+    return this.get('enroll/getExamInfo', { major });
   }
 
   public updateInfo(data: any) {
@@ -46,28 +58,29 @@ class Api {
   }
 
   public deleteImage(type: string, fileName: string) {
-    return this.get(`enroll/deleteImage?type=${type}&fileName=${fileName}`, this.FILE_HOST);
+    return this.get('enroll/deleteImage', { type, fileName }, this.FILE_HOST);
   }
 
   public getPayList() {
-    return this.get('pay/getList');
+    return this.get('pay/getPayList');
   }
 
-  public getPayInfo(payType: string, itemId: string, orderId?: string) {
-    return this.get(`pay/getPayInfo?payType=${payType}&itemId=${itemId}` + (orderId ? `&orderId=${orderId}` : ''));
+  public getPayInfo(payType: string, itemId: string, orderId?: string | null) {
+    return this.get('pay/getPayInfo', { payType, itemId, orderId });
   }
 
   public getPayResult(payType: string, itemId: string, orderId: string) {
-    return this.get(`pay/getPayResult?payType=${payType}&itemId=${itemId}&orderId=${orderId}`);
+    return this.get('pay/getPayResult', { payType, itemId, orderId });
   }
 
-  private get(url: string, host = this.HOST) {
+  private get(url: string, params?: any, host = this.HOST) {
     const promise: AxiosPromise = axios.get(
       host + url,
       {
         headers: {
           token: store.state.token,
         },
+        params,
       },
     );
     return this.handleResult(promise);

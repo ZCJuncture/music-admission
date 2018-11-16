@@ -2,7 +2,7 @@
   el-dialog.root-news-dialog(width="70%" :title="obj.title" :visible.sync="show")
     span.text-publisher 发布者：{{obj.publisher}}
     span.text-date {{obj.createDate | datetime}}
-    .wp-content {{obj.content}}
+    .wp-content(v-html="obj.content")
 
     div(slot="footer")
       el-button(type="primary" @click="show = false") 关闭

@@ -1,5 +1,5 @@
 <template lang="pug">
-  el-container.root-index(:style="{backgroundImage: background}")
+  el-container.root-index(:style="{ backgroundImage: background }")
     el-header(height="80px")
       img(src="@/assets/logo-header.png")
       h1 中央音乐学院招生系统
@@ -17,8 +17,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component({})
 export default class Index extends Vue {
-  private background: string =
-    'url(' + require('@/assets/bg-index.jpg') + ')';
+  private background: string = 'url(' + require('@/assets/bg-index.jpg') + ')';
 }
 </script>
 

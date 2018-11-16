@@ -137,6 +137,7 @@ export default class Login extends Vue {
       margin-top: 10px;
 
       .text-title {
+        @include one-line;
         margin-left: 5px;
         cursor: pointer;
 
@@ -147,6 +148,7 @@ export default class Login extends Vue {
 
       .wp-date {
         flex-grow: 1;
+        flex-shrink: 0;
         text-align: right;
         font-size: 14px;
       }

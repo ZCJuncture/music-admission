@@ -28,7 +28,7 @@ import api from '@/api';
   components: { InfoItem, NewsDialog },
 })
 export default class NewsList extends BaseList {
-  private keyword: string = '';
+  private keyword: string | null = null;
 
   public created() {
     this.getList();
@@ -50,6 +50,7 @@ export default class NewsList extends BaseList {
 .root-news-list {
   .wp-option {
     @include center-v;
+    height: 60px;
 
     .el-tabs {
       flex-grow: 1;

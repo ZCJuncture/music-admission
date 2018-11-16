@@ -4,7 +4,7 @@ export default abstract class BaseList extends Vue {
   protected loading: boolean = false;
   protected list: any[] = [];
   protected pageNo: number = 1;
-  protected pageSize: number = 10;
+  protected pageSize: number = 20;
   protected total: number = 0;
 
   protected abstract getListImpl();
