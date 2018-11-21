@@ -2,7 +2,17 @@
   .root-brief
     .wp-shortcut
       el-button.btn-enroll(icon="el-icon-edit" @click="routeTo('fillOut')") 考生报名
-      el-button.btn-result(icon="el-icon-search") 查询结果
+      el-button.btn-result(icon="el-icon-search") 查询成绩
+
+      el-steps(align-center :active="step" process-status="finish" finish-status="success")
+        el-step(title="信息填报")
+        el-step(title="初试缴费")
+        el-step(title="打印准考证")
+        el-step(title="初试中")
+        el-step(title="复试缴费")
+        el-step(title="复试中")
+        el-step(title="三试中")
+        el-step(title="录取通过")
 
     .wp-card
       el-card.card-news(v-loading="loadingNews")
@@ -42,6 +52,10 @@ export default class Brief extends Vue {
   private loadingNotice: boolean = false;
   private newsList: any[] = [];
   private noticeList: any[] = [];
+
+  private get step() {
+    return this.$store.state.status / 10;
+  }
 
   public async created() {
     this.getNewsList();
@@ -94,6 +108,7 @@ export default class Brief extends Vue {
 
     .el-button {
       @include center-hv;
+      flex-shrink: 0;
       width: 200px;
       height: 100%;
       font-size: 20px;
@@ -110,6 +125,11 @@ export default class Brief extends Vue {
 
     .btn-result {
       @include button-color(rgb(132, 124, 197));
+      margin-left: 20px;
+    }
+
+    .el-steps {
+      width: 100%;
       margin-left: 20px;
     }
   }

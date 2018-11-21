@@ -69,8 +69,8 @@ class Api {
     return this.get('pay/getPayInfo', { payType, itemId, orderId });
   }
 
-  public getPayResult(payType: string, itemId: string, orderId: string) {
-    return this.get('pay/getPayResult', { payType, itemId, orderId });
+  public getPayResult(payType: string, orderId: string) {
+    return this.get('pay/getPayResult', { payType, orderId });
   }
 
   private get(url: string, params?: any, host = this.HOST) {

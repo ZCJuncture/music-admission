@@ -69,11 +69,12 @@ router.afterEach((to, from) => {
 async function isLogin() {
   const token = Vue.cookies.get('token');
 
-  if (!token) { return false; } else { store.state.token = token; }
+  if (!token) { return false; } else { store.commit('setToken', token); }
 
   try {
     const user = await api.checkStatus();
     store.commit('setUser', user);
+    store.commit('setStatus', user.status);
     return true;
   } catch (e) {
     return false;

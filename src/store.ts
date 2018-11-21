@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     token: '',
     user: {},
+    status: 0,
   },
 
   mutations: {
@@ -16,6 +17,10 @@ export default new Vuex.Store({
 
     setUser(state, user) {
       state.user = user;
+    },
+
+    setStatus(state, status) {
+      state.status = status;
     },
   },
 

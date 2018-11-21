@@ -17,8 +17,8 @@
               template(slot-scope="scope2")
                 span(v-if="scope2.row.payDate") {{scope2.row.payDate | datetime}}
 
-            el-table-column(align="center")
-              template(v-if="!paid(scope.$index)" slot-scope="scope2")
+            el-table-column(v-if="!paid(scope.$index)" align="center")
+              template(slot-scope="scope2")
                 el-button(type="success" size="small" @click="continuePay(scope2.row.payType, scope.row._id, scope2.row._id)") 继续支付
                 el-button(type="primary" size="small" @click="newPay(scope.row._id)") 更换方式
 
@@ -32,13 +32,15 @@
 
       el-table-column(label="当前状态" align="center")
         template(slot-scope="scope")
-          el-tag(v-if="paid(scope.$index)" type="success") 已支付
-          el-tag(v-else type="warning") 未支付
+          el-tag(v-if="status < 10" type="danger") 未填报
+          el-tag(v-else-if="scope.row.stage === '复试' && status < 40" type="danger") 未开始
+          el-tag(v-else-if="!paid(scope.$index)" type="warning") 未支付
+          el-tag(v-else type="success") 已支付
       
       el-table-column(align="center")
         template(slot-scope="scope")
           template(v-if="!paid(scope.$index)")
-            el-button(v-if="!list[scope.$index].record" type="success" size="small" @click="newPay(scope.row._id)") 支付
+            el-button(v-if="!list[scope.$index].record" type="success" size="small" @click="newPay(scope.row._id)" :disabled="status < 10 || (scope.row.stage === '复试' && status < 40)") 支付
             el-button(v-else type="success" size="small" @click="expandTable(scope.row)") 支付
           el-button(v-else type="primary" size="small" @click="expandTable(scope.row)") 查看
 
@@ -80,6 +82,10 @@ export default class OnlinePay extends Vue {
     itemId: '',
     orderId: '',
   };
+
+  private get status() {
+    return this.$store.state.status;
+  }
 
   public created() {
     this.getPayList();
@@ -132,12 +138,7 @@ export default class OnlinePay extends Vue {
     this.dialog.loading = true;
 
     try {
-      await api.getPayResult(
-        this.dialog.payType,
-        this.dialog.itemId,
-        this.dialog.orderId,
-      );
-
+      await api.getPayResult(this.dialog.payType, this.dialog.orderId);
       this.getPayList();
     } finally {
       this.resetDialog();

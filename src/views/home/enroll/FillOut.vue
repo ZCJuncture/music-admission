@@ -17,7 +17,7 @@
 
     .wp-buttons
       el-button(v-if="step > 0" plain type="primary" @click="prevStep()") 上一步
-      template(v-if="!model.submitted")
+      template(v-if="!submitted")
         el-button(v-if="step === 2" type="success" @click="submit()" :loading="submitting") 保存并提交
         el-button(v-if="editable" type="success" @click="update()" :loading="updating") 暂存
         el-button(v-if="!editable" type="primary" @click="edit()") 编辑
@@ -57,7 +57,11 @@ export default class FillOut extends Vue {
 
   private model: any = JSON.parse(JSON.stringify(this.$store.state.user));
   private dialogModel = { collegeExamNo: '', provinceExamNo: '' };
-  private editable: boolean = !this.model.submitted;
+  private editable: boolean = !this.submitted;
+
+  private get submitted() {
+    return this.$store.state.status >= 10;
+  }
 
   public prevStep() {
     this.step--;
@@ -125,24 +129,25 @@ export default class FillOut extends Vue {
     });
 
     this.submitting = true;
-    this.model.submitted = true;
+    this.model.status = 10;
 
     try {
       const message = await api.updateInfo(this.model);
       this.$store.commit('setUser', this.model);
+      this.$store.commit('setStatus', this.model.status);
       this.$notify.info({ title: '通知', message });
       this.$router.replace('onlinePay');
       this.editable = false;
     } catch (e) {
       this.$message.error(e.data);
-      this.model.submitted = false;
+      this.model.status = 0;
     } finally {
       this.submitting = false;
     }
   }
 
   public openDialog() {
-    if (!this.model.submitted) {
+    if (!this.submitted) {
       this.$message.warning('报名信息提交后才可补填');
       return;
     }

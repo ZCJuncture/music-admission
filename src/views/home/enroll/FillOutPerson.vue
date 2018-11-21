@@ -76,33 +76,33 @@
           el-button(v-if="editable" size="small" @click="addFamily()" style="width: 150px") 添加
           span(v-else) 暂无数据
 
-        el-table-column(label="姓名")
+        el-table-column(label="姓名" align="center")
           template(slot-scope="scope")
             el-input(v-if="editable" v-model="scope.row.name" size="small")
             span(v-else) {{scope.row.name}}
 
-        el-table-column(label="亲属关系")
+        el-table-column(label="亲属关系" align="center")
           template(slot-scope="scope")
             el-input(v-if="editable" v-model="scope.row.relationship" size="small")
             span(v-else) {{scope.row.relationship}}
 
-        el-table-column(label="政治面貌")
+        el-table-column(label="政治面貌" align="center")
           template(slot-scope="scope")
             el-select(v-if="editable" v-model="scope.row.politics" size="small")
               el-option(v-for="item in politicsList" :key="item.id" :value="item.name")
             span(v-else) {{scope.row.politics}}
 
-        el-table-column(label="工作单位")
+        el-table-column(label="工作单位" align="center")
           template(slot-scope="scope")
             el-input(v-if="editable" v-model="scope.row.company" size="small")
             span(v-else) {{scope.row.company}}
 
-        el-table-column(label="手机号")
+        el-table-column(label="手机号" align="center")
           template(slot-scope="scope")
             el-input(v-if="editable" v-model="scope.row.phoneNumber" size="small")
             span(v-else) {{scope.row.phoneNumber}}
 
-        el-table-column
+        el-table-column(align="center")
           template(slot-scope="scope")
             el-button(v-if="editable" size="small" type="danger" @click="removeFamily(scope.$index)") 删除
             el-button(v-if="editable && scope.$index === model.family.length - 1" size="small" type="success" @click="addFamily()") 添加

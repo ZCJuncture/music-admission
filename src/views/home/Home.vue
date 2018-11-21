@@ -90,6 +90,7 @@ export default class Home extends Vue {
     this.$cookies.remove('token');
     this.$store.commit('setToken', '');
     this.$store.commit('setUser', {});
+    this.$store.commit('setStatus', 0);
     this.$router.replace('/index/login');
   }
 }
