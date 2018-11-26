@@ -73,6 +73,10 @@ class Api {
     return this.get('pay/getPayResult', { payType, orderId });
   }
 
+  public printTicket() {
+    return this.get('enroll/printTicket');
+  }
+
   private get(url: string, params?: any, host = this.HOST) {
     const promise: AxiosPromise = axios.get(
       host + url,

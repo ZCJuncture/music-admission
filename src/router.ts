@@ -51,6 +51,14 @@ const router = new Router({
           path: 'onlinePay',
           component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/OnlinePay.vue'),
         },
+        {
+          path: 'onlinePay',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/OnlinePay.vue'),
+        },
+        {
+          path: 'printTicket',
+          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/PrintTicket.vue'),
+        },
       ],
     },
   ],

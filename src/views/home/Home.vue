@@ -30,6 +30,7 @@
               span 报考流程
             el-menu-item(index="fillOut") 信息填报
             el-menu-item(index="onlinePay") 在线缴费
+            el-menu-item(index="printTicket") 打印准考证
 
           el-submenu(index="result")
             template(slot="title")
@@ -168,6 +169,18 @@ export default class Home extends Vue {
           width: 200px;
         }
       }
+    }
+  }
+
+  @media print {
+    .el-header,
+    .el-aside {
+      display: none !important;
+    }
+
+    .el-main {
+      margin-top: -80px !important;
+      margin-left: 0 !important;
     }
   }
 }
