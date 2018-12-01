@@ -25,6 +25,14 @@ class Api {
     return this.get('user/logout');
   }
 
+  public resetPassword(data: any) {
+    return this.post('user/resetPassword', data);
+  }
+
+  public changePassword(data: any) {
+    return this.post('user/changePassword', data);
+  }
+
   public getNewsList(keyword?: string | null, pageNo?: number, pageSize?: number) {
     return this.get('news/getNewsList', { keyword, pageNo, pageSize });
   }

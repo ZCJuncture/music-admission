@@ -109,6 +109,7 @@ export default class Register extends Vue {
         try {
           await api.register({
             phoneNumber: this.model.phoneNumber,
+            smsCode: this.model.smsCode,
             password: new MD5().update(this.model.password).digest('hex'),
           });
 

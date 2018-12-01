@@ -36,18 +36,23 @@
             template(slot="title")
               i.el-icon-search
               span 查询结果
-            el-menu-item(index="3-1") 复试查询
-            el-menu-item(index="3-2") 快递单号
+            el-menu-item(index="" @click="mock()") 复试查询
+            el-menu-item(index="" @click="mock()") 快递单号
 
       el-main(:style="{ marginLeft: isCollapse ? '65px' : '200px' }")
         router-view
+
+    password-dialog(ref="passwordDialog")
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import PasswordDialog from '@/components/PasswordDialog.vue';
 import api from '@/api';
 
-@Component({})
+@Component({
+  components: { PasswordDialog },
+})
 export default class Home extends Vue {
   private background: string = 'url(' + require('@/assets/bg-header.jpg') + ')';
   private routePath: string = 'brief';
@@ -75,6 +80,9 @@ export default class Home extends Vue {
 
   public async handleCommand(command: string) {
     switch (command) {
+      case 'password':
+        (this.$refs.passwordDialog as PasswordDialog).showDialog();
+        break;
       case 'logout':
         try {
           await api.logout();
@@ -93,6 +101,10 @@ export default class Home extends Vue {
     this.$store.commit('setUser', {});
     this.$store.commit('setStatus', 0);
     this.$router.replace('/index/login');
+  }
+
+  public mock() {
+    this.$message.warning('您还未进入该流程');
   }
 }
 </script>

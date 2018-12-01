@@ -18,10 +18,11 @@
           el-button(type="primary" @click="login()" :loading="logining") 登&nbsp;&nbsp;&nbsp;录
 
       .login-footer
-        el-button(type="text") 忘记密码
+        el-button(type="text" @click="forgetPassword()") 忘记密码
         el-button.btn-register(type="text" @click="register()") 报名注册
 
-    news-dialog(ref="dialog")
+    news-dialog(ref="newsDialog")
+    password-dialog(ref="passwordDialog")
 </template>
 
 <script lang="ts">
@@ -29,10 +30,11 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Form } from 'element-ui';
 import MD5 from 'md5.js';
 import NewsDialog from '@/components/NewsDialog.vue';
+import PasswordDialog from '@/components/PasswordDialog.vue';
 import api from '@/api';
 
 @Component({
-  components: { NewsDialog },
+  components: { NewsDialog, PasswordDialog },
 })
 export default class Login extends Vue {
   private loadingNews: boolean = false;
@@ -76,7 +78,11 @@ export default class Login extends Vue {
   }
 
   public showNews(item: any) {
-    (this.$refs.dialog as NewsDialog).showNews(item);
+    (this.$refs.newsDialog as NewsDialog).showNews(item);
+  }
+
+  public forgetPassword() {
+    (this.$refs.passwordDialog as PasswordDialog).showDialog();
   }
 
   public login() {

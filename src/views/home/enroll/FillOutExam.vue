@@ -54,7 +54,9 @@ export default class FillOutExam extends Vue {
   public async changeMajor(major: string[]) {
     try {
       const { data } = await api.getExamInfo(major[1]);
-      this.model.examInfo = data;
+      this.model.examInfo = data || [
+        { first1: [], first2: [], second: [], third: [] },
+      ];
     } catch (e) {
       this.$message.error(e.data);
     }
