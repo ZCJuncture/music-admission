@@ -6,58 +6,59 @@ import api from '@/api';
 Vue.use(Router);
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/index',
-      component: () => import(/* webpackChunkName: "index" */ './views/index/Index.vue'),
+      component: () => import(/* webpackChunkName: "index" */ '@/views/index/Index.vue'),
       beforeEnter: async (to, from, next) => {
         if (!await isLogin()) { next(); } else { next({ path: '/home/brief', replace: true }); }
       },
       children: [
         {
           path: 'login',
-          component: () => import(/* webpackChunkName: "index" */ './views/index/Login.vue'),
+          component: () => import(/* webpackChunkName: "index" */ '@/views/index/Login.vue'),
         },
         {
           path: 'register',
-          component: () => import(/* webpackChunkName: "index" */ './views/index/Register.vue'),
+          component: () => import(/* webpackChunkName: "index" */ '@/views/index/Register.vue'),
         },
       ],
     },
     {
       path: '/home',
-      component: () => import(/* webpackChunkName: "home" */ './views/home/Home.vue'),
+      component: () => import(/* webpackChunkName: "home" */ '@/views/home/Home.vue'),
       beforeEnter: async (to, from, next) => {
         if (await isLogin()) { next(); } else { next({ path: '/index/login', replace: true }); }
       },
       children: [
         {
           path: 'brief',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/info/Brief.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/info/Brief.vue'),
         },
         {
           path: 'newsList',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/info/NewsList.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/info/NewsList.vue'),
         },
         {
           path: 'noticeList',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/info/NoticeList.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/info/NoticeList.vue'),
         },
         {
           path: 'fillOut',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/FillOut.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/enroll/FillOut.vue'),
         },
         {
           path: 'onlinePay',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/OnlinePay.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/enroll/OnlinePay.vue'),
         },
         {
           path: 'onlinePay',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/OnlinePay.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/enroll/OnlinePay.vue'),
         },
         {
           path: 'printTicket',
-          component: () => import(/* webpackChunkName: "home" */ './views/home/enroll/PrintTicket.vue'),
+          component: () => import(/* webpackChunkName: "home" */ '@/views/home/enroll/PrintTicket.vue'),
         },
       ],
     },
