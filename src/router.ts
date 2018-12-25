@@ -76,8 +76,7 @@ router.afterEach((to, from) => {
 });
 
 async function isLogin() {
-  const token = Vue.cookies.get('token');
-
+  const token = localStorage.getItem('token');
   if (!token) { return false; } else { store.commit('setToken', token); }
 
   try {

@@ -96,7 +96,7 @@ export default class Home extends Vue {
   }
 
   public logout() {
-    this.$cookies.remove('token');
+    localStorage.removeItem('token');
     this.$store.commit('setToken', '');
     this.$store.commit('setUser', {});
     this.$store.commit('setStatus', 0);

@@ -96,7 +96,7 @@ export default class Login extends Vue {
             password: new MD5().update(this.model.password).digest('hex'),
           });
 
-          this.$cookies.set('token', token);
+          localStorage.setItem('token', token);
           this.$store.commit('setToken', token);
           this.$router.replace('/home/brief');
         } catch (e) {
